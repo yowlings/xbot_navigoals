@@ -21,7 +21,7 @@ Once the navigation with move_base launched, just run:
 then in command line you will see the hint message for leading you use the tool.
 
 2. roslaunch
-add the following fragment to your launch file which already launched the move_base package:
+add the following fragment to your launch file which already included the move_base package:
 ~~~
 <node name="navi_goals" pkg="xbot_navigoals" type="navigoals" output="screen">
 </node>
