@@ -8,7 +8,7 @@ The package is usually used for two cases:
 ## Dependence
 * move_base
 * rviz
-* xbot[](https://github.com/yowlings/xbot)
+* [xbot](https://github.com/yowlings/xbot)
 * gmapping/map_server
 
 
@@ -40,7 +40,7 @@ add the following fragment to your launch file which already launched the move_b
 1. ~make_plan (nav_msgs/GetPlan)
 
 ## References
-kobuke_keyop[](https://github.com/yujinrobot/kobuki/tree/devel/kobuki_keyop)
+[kobuke_keyop](https://github.com/yujinrobot/kobuki/tree/devel/kobuki_keyop)
 
 
 
