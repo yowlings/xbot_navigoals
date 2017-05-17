@@ -29,15 +29,15 @@ add the following fragment to your launch file which already included the move_b
 
 ## API
 ### publish topics
-1. /xbot_navigoals/navi_plans(nav_msgs/Path)
-2. /move_base_simple/goal(geometry_msgs/PoseStamped)
-3. /xbot_navigoals/marker_goals(visualization_msgs/MarkerArray)
+1. /xbot_navigoals/navi_plans([nav_msgs/Path](http://docs.ros.org/api/nav_msgs/html/msg/Path.html))
+2. /move_base_simple/goal([geometry_msgs/PoseStamped](http://docs.ros.org/api/geometry_msgs/html/msg/PoseStamped.html))
+3. /xbot_navigoals/marker_goals([visualization_msgs/MarkerArray](http://docs.ros.org/kinetic/api/visualization_msgs/html/msg/MarkerArray.html))
 ### subscribe topics
-1. /goal(geometry_msgs/PoseStamped)
-2. /move_base/result(actionlib_msgs/GoalStatusArray)
+1. /goal([geometry_msgs/PoseStamped](http://docs.ros.org/api/geometry_msgs/html/msg/PoseStamped.html))
+2. /move_base/result([actionlib_msgs/GoalStatusArray](http://docs.ros.org/api/actionlib_msgs/html/msg/GoalStatusArray.html))
 
 ### subscribe services
-1. ~make_plan (nav_msgs/GetPlan)
+1. ~make_plan ([nav_msgs/GetPlan](http://docs.ros.org/api/nav_msgs/html/srv/GetPlan.html))
 
 ## References
 [kobuke_keyop](https://github.com/yujinrobot/kobuki/tree/devel/kobuki_keyop)
