@@ -16,8 +16,9 @@ The package is usually used for two cases:
 1. rosrun 
 
 Once the navigation with move_base launched, just run:
->rosrun xbot_navigoals navigoals
-
+~~~
+rosrun xbot_navigoals navigoals
+~~~
 then in command line you will see the hint message for leading you use the tool.
 
 2. roslaunch
@@ -40,7 +41,7 @@ add the following fragment to your launch file which already included the move_b
 1. ~make_plan ([nav_msgs/GetPlan](http://docs.ros.org/api/nav_msgs/html/srv/GetPlan.html))
 
 ## References
-[kobuke_keyop](https://github.com/yujinrobot/kobuki/tree/devel/kobuki_keyop)
+[kobuki_keyop](https://github.com/yujinrobot/kobuki/tree/devel/kobuki_keyop)
 
 
 

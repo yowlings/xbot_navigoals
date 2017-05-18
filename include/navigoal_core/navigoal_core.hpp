@@ -53,6 +53,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/GetPlan.h>
 #include <move_base_msgs/MoveBaseActionResult.h>
+#include <xbot_msgs/NaviState.h>
 
 
 
@@ -90,11 +91,14 @@ public:
 private:
 
   ros::Subscriber clicked_goal_subscriber;
-  ros::Subscriber navigoal_status;
+  ros::Subscriber navigoal_status_subscriber;
+  ros::Subscriber pad_finished_goal_subscriber;
+
 
   ros::Publisher plans_publisher_;
   ros::Publisher execute_goal_publisher_;
   ros::Publisher marker_goals_publisher_;
+  ros::Publisher reached_subgoal_publisher;
 
 
 
@@ -120,7 +124,7 @@ private:
   void clearAllGoals();
   void createGoalSerials();
   void completeGoals();
-  void deletLastGoal();
+
 
   /*********************
    ** Keylogging
@@ -130,6 +134,7 @@ private:
   void processKeyboardInput(char c);
   void clickedGoalReceived(const geometry_msgs::PoseStamped& pose);
   void naviGoalStatus(const move_base_msgs::MoveBaseActionResult& result);
+  void padFinishedGoal(const xbot_msgs::NaviState& navistate);
   void restoreTerminal();  
   int key_file_descriptor;
   bool quit_requested;

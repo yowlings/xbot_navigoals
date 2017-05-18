@@ -43,6 +43,7 @@
 #include <ecl/exceptions.hpp>
 #include <std_srvs/Empty.h>
 #include <nav_msgs/Path.h>
+
 #include "../include/navigoal_core/navigoal_core.hpp"
 
 /*****************************************************************************
@@ -88,7 +89,8 @@ bool NaviGoalCore::init()
    **********************/
 
   clicked_goal_subscriber = nh.subscribe("/goal",1,&NaviGoalCore::clickedGoalReceived, this);
-  navigoal_status = nh.subscribe("/move_base/result", 1,&NaviGoalCore::naviGoalStatus, this);
+  navigoal_status_subscriber = nh.subscribe("/move_base/result", 1,&NaviGoalCore::naviGoalStatus, this);
+  pad_finished_goal_subscriber = nh.subscribe("/xbot_header/pad_finished_goal",1,&NaviGoalCore::padFinishedGoal, this);
 
 
   /*********************
@@ -97,6 +99,7 @@ bool NaviGoalCore::init()
   plans_publisher_ = nh.advertise<nav_msgs::Path>("navi_plans",1);
   execute_goal_publisher_ = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal",1);
   marker_goals_publisher_ = nh.advertise<visualization_msgs::MarkerArray>("marker_goals",0);
+  reached_subgoal_publisher = nh.advertise<xbot_msgs::NaviState>("reached_subgoal",1);
 
 
   /*********************
@@ -192,7 +195,6 @@ void NaviGoalCore::keyboardInputLoop()
   puts("Reading from keyboard");
   puts("---------------------------");
   puts("n : create a new goal serial.");
-  puts("d : delete last goal.");
   puts("c : clear all goals.");
   puts("f : finish click goal.");
   puts("q : quit.");
@@ -230,11 +232,6 @@ void NaviGoalCore::processKeyboardInput(char c)
       createGoalSerials();
       break;
     }
-    case 'd':
-    {
-      deletLastGoal();
-      break;
-    }
     case 'f':
     {
       completeGoals();
@@ -261,11 +258,20 @@ void NaviGoalCore::processKeyboardInput(char c)
 
 void NaviGoalCore::naviGoalStatus(const move_base_msgs::MoveBaseActionResult& result)
 {
-  current_goal=(current_goal+1>num_goals)?0:current_goal+1;
-  execute_goal_publisher_.publish(goals[current_goal]);
+  xbot_msgs::NaviState state;
+  state.subgoal_index = current_goal;
+  reached_subgoal_publisher.publish(state);
+
 
 }
 
+// /xbot_header/pad_finished_goal callback function..
+void NaviGoalCore::padFinishedGoal(const xbot_msgs::NaviState &navistate)
+{
+  current_goal = (navistate.subgoal_index+1)%num_goals;
+  execute_goal_publisher_.publish(goals[current_goal]);
+
+}
 
 //2D Nav Goal tool clicked callback function..
 void NaviGoalCore::clickedGoalReceived(const geometry_msgs::PoseStamped &pose)
@@ -363,26 +369,6 @@ void NaviGoalCore::clearAllGoals()
 
 }
 
-/**
- * @brief delete last fault goal..
- */
-void NaviGoalCore::deletLastGoal()
-{
-  if(!click_goal_finished){
-    if(num_goals>0)
-    {
-      num_goals--;
-      arraymarker.markers.pop_back();
-      ROS_INFO("Last goal is deleted, there are %d/%d goals now!", num_goals, MAX_GOAL_NUM);
-    }
-    else
-    {
-      ROS_ERROR_STREAM("You have not given any goals!");
-    }
-  }
-
-
-}
 
 /**
  * @brief click goal complete..
@@ -410,7 +396,7 @@ void NaviGoalCore::completeGoals()
   plans_publisher_.publish(navi_path);
   click_goal_finished = true;
   reached_goal = false;
-  execute_goal_publisher_.publish(goals[0]);
+  execute_goal_publisher_.publish(goals[current_goal]);
 
   ROS_INFO_STREAM("Click goals finished!");
 
