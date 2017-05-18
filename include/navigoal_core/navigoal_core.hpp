@@ -30,7 +30,7 @@
 /**
  * @file /include/teleop_core/keyop_core.hpp
  *
- * @brief The controlling node for remote operations on robot_core.
+ * @brief The controlling node for xbot navigation goals
  *
  **/
 
@@ -70,7 +70,7 @@ namespace navigoal_core
  ** Interface
  *****************************************************************************/
 /**
- * @brief Keyboard remote control for our robot core (mobile base).
+ * @brief Keyboard point goals for our xbot core (mobile base).
  *
  */
 class NaviGoalCore

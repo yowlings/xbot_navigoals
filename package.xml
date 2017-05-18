@@ -2,14 +2,14 @@
   <name>xbot_navigoals</name>
   <version>0.6.7</version>
   <description>
-    Keyboard teleoperation for Kobuki: relays commands from a keyboard to Kobuki.
+    Controlling navigation goals for xbot, including point and give goals.
   </description>
-  <author email="stonier@yujinrobot.com">Daniel Stonier</author>
-  <maintainer email="stonier@yujinrobot.com">Daniel Stonier</maintainer>
+  <author email="yowlings@gmail.com">Rocwang</author>
+  <maintainer email="yowlings@gmail.com">Rocwang</maintainer>
   <license>BSD</license>
-  <url type="bugtracker">https://github.com/yujinrobot/kobuki/issues</url>
-  <url type="repository">https://github.com/yujinrobot/kobuki</url>
-  <url type="website">http://ros.org/wiki/xbot_navigoals</url>
+  <url type="bugtracker">https://github.com/yowlings/xbot_navigoals/issues</url>
+  <url type="repository">https://github.com/yowlings/xbot_navigoals</url>
+  <url type="website">http://robots.ros.org/xbot/</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -25,8 +25,8 @@
   <build_depend>ecl_threads</build_depend>
   <build_depend>ecl_time</build_depend>
 
-  <!-- Kobuki -->
-  <build_depend>kobuki_msgs</build_depend>
+  <!--  Xbot-->
+  <build_depend>xbot_msgs</build_depend>
 
 
   <!-- Ros -->
@@ -41,10 +41,8 @@
   <run_depend>ecl_threads</run_depend>
   <run_depend>ecl_time</run_depend>
 
-  <!-- Kobuki -->
-  <run_depend>kobuki_msgs</run_depend>
+  <!--xbot-->
+  <run_depend>xbot_msgs</run_depend>
 
-  <!-- Yujin ocs -->
-  <run_depend>yocs_cmd_vel_mux</run_depend>
-  <run_depend>yocs_velocity_smoother</run_depend>
+
 </package>

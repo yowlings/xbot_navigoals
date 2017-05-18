@@ -28,9 +28,9 @@
  */
 
 /**
- * @file /kobuki_keyop/src/navigoal_core.cpp
+ * @file /xbot_navigoals/src/navigoal_core.cpp
  *
- * @brief Creates a node for remote controlling parts of robot_core.
+ * @brief Creates a node for controlling the goals given to xbot
  *
  **/
 
@@ -82,17 +82,13 @@ NaviGoalCore::~NaviGoalCore()
 bool NaviGoalCore::init()
 {
   ros::NodeHandle nh("~");
-
   name = nh.getUnresolvedNamespace();  
   /*********************
    ** Subscribers
    **********************/
-
   clicked_goal_subscriber = nh.subscribe("/goal",1,&NaviGoalCore::clickedGoalReceived, this);
   navigoal_status_subscriber = nh.subscribe("/move_base/result", 1,&NaviGoalCore::naviGoalStatus, this);
   pad_finished_goal_subscriber = nh.subscribe("/xbot_header/pad_finished_goal",1,&NaviGoalCore::padFinishedGoal, this);
-
-
   /*********************
    ** Publishers
    **********************/
@@ -100,8 +96,6 @@ bool NaviGoalCore::init()
   execute_goal_publisher_ = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal",1);
   marker_goals_publisher_ = nh.advertise<visualization_msgs::MarkerArray>("marker_goals",0);
   reached_subgoal_publisher = nh.advertise<xbot_msgs::NaviState>("reached_subgoal",1);
-
-
   /*********************
    ** Service
    **********************/
@@ -112,9 +106,6 @@ bool NaviGoalCore::init()
   }
   navi_path.poses.clear();
   navi_path.header.frame_id = "map";
-
-
-
 
   /*********************
    ** Marker_goals
@@ -135,10 +126,6 @@ bool NaviGoalCore::init()
   marker.color.g = 0;
   marker.color.b = 0;
 
-
-
-
-
   // start keyboard input thread
   thread.start(&NaviGoalCore::keyboardInputLoop, *this);
   return true;
@@ -149,7 +136,7 @@ bool NaviGoalCore::init()
  *****************************************************************************/
 
 /**
- * @brief Worker thread loop; sends current velocity command at a fixed rate.
+ * @brief Worker thread loop;
  *
  * It also process ros functions as well as aborting when requested.
  */
@@ -159,10 +146,6 @@ void NaviGoalCore::spin()
 
   while (!quit_requested&&ros::ok())
   {
-    if(click_goal_finished)
-    {
-
-    }
 
     ros::spinOnce();
     loop_rate.sleep();
@@ -219,11 +202,7 @@ void NaviGoalCore::keyboardInputLoop()
 void NaviGoalCore::processKeyboardInput(char c)
 {
   /*
-   * Arrow keys are a bit special, they are escape characters - meaning they
-   * trigger a sequence of keycodes. In this case, 'esc-[-Keycode_xxx'. We
-   * ignore the esc-[ and just parse the last one. So long as we avoid using
-   * the last one for its actual purpose (e.g. left arrow corresponds to
-   * esc-[-D) we can keep the parsing simple.
+   *
    */
   switch (c)
   {    

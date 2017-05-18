@@ -28,9 +28,9 @@
  */
 
 /**
- * @file /kobuki_keyop/src/main.cpp
+ * @file /xbot_navigoals/src/main.cpp
  *
- * @brief Executable code for the keyop node.
+ * @brief Executable code for the navigoals node.
  *
  **/
 
