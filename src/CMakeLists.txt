@@ -9,7 +9,7 @@ file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 ##############################################################################
 
 add_executable(navigoals ${SOURCES})
-add_dependencies(navigoals kobuki_msgs_gencpp)
+add_dependencies(navigoals xbot_navigoals_gencpp)
 target_link_libraries(navigoals ${catkin_LIBRARIES})
 
 install(TARGETS navigoals

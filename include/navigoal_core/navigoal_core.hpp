@@ -54,11 +54,13 @@
 #include <nav_msgs/GetPlan.h>
 #include <move_base_msgs/MoveBaseActionResult.h>
 #include <xbot_msgs/NaviState.h>
+#include <xbot_navigoals/RobotStatus.h>
+#include <xbot_navigoals/SignStatus.h>
+#include <xbot_navigoals/AudioStatus.h>
 
 
 
-
-#define MAX_GOAL_NUM 10
+#define MAX_GOAL_NUM 20
 /*****************************************************************************
  ** Namespaces
  *****************************************************************************/
@@ -93,30 +95,30 @@ private:
   ros::Subscriber clicked_goal_subscriber;
   ros::Subscriber navigoal_status_subscriber;
   ros::Subscriber pad_finished_goal_subscriber;
-
+  ros::Subscriber pad_audio_subscriber;
 
   ros::Publisher plans_publisher_;
   ros::Publisher execute_goal_publisher_;
   ros::Publisher marker_goals_publisher_;
   ros::Publisher reached_subgoal_publisher;
-
-
+  ros::Publisher arrive_goal_publisher;
 
   visualization_msgs::MarkerArray arraymarker;
   visualization_msgs::Marker marker;
   geometry_msgs::PoseStamped goal;
   geometry_msgs::PoseStamped goals[MAX_GOAL_NUM];
-
+  geometry_msgs::PoseStamped first_click_point;//the first clicked point
+  geometry_msgs::PoseStamped start_point;//the start point 
 
   ros::ServiceClient serviceClient;
   nav_msgs::GetPlan make_plan_srv;
   nav_msgs::Path navi_path;
   int num_goals;
-  int current_goal;
+  int current_position;
   bool click_goal_finished;
   bool reached_goal;
   std::string name;
-
+  bool is_started;
   /*********************
    ** Commands
    **********************/
@@ -134,7 +136,8 @@ private:
   void processKeyboardInput(char c);
   void clickedGoalReceived(const geometry_msgs::PoseStamped& pose);
   void naviGoalStatus(const move_base_msgs::MoveBaseActionResult& result);
-  void padFinishedGoal(const xbot_msgs::NaviState& navistate);
+  void receiveSignStatus(const xbot_navigoals::SignStatus& signStatus);
+  void receiveAudioStatus(const xbot_navigoals::AudioStatus& audioStatus);
   void restoreTerminal();  
   int key_file_descriptor;
   bool quit_requested;

@@ -1,0 +1,14 @@
+<launch>
+	<!-- talker -->
+	<node name="talker" pkg="talker" type="talker">
+		<param name="base_path" value="$(find talker)" />
+	</node>
+	<!-- face recognition -->
+	<node name = "face_recog" pkg = "xbot_navigoals" type = "face_recog.py" />
+
+	<!-- office slam -->
+	<node name = "office_slam" pkg = "xbot_navigoals" type = "office_slam.py">
+		<param name = "yaml_file_path" value = "$(find xbot_navigoals)" />
+	</node>
+
+</launch>

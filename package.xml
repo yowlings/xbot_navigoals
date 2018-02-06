@@ -13,6 +13,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>message_generation</build_depend>
   <!-- Ros -->
   <build_depend>geometry_msgs</build_depend>
   <build_depend>std_srvs</build_depend>
@@ -41,8 +42,7 @@
   <run_depend>ecl_threads</run_depend>
   <run_depend>ecl_time</run_depend>
 
-  <!--xbot-->
-  <run_depend>xbot_msgs</run_depend>
+  <run_depend>message_runtime</run_depend>
 
 
 </package>
