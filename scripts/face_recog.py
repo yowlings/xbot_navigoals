@@ -9,7 +9,7 @@ from json import *
 from xbot_msgs.msg import FaceResult
 from std_msgs.msg import String, UInt32
 
-url = "http://172.16.0.143:8000/recognition"
+url = "http://192.168.8.141:8000/recognition"
 
 
 
@@ -42,6 +42,9 @@ class face_recog():
 				rospy.loginfo(body)
 
 			if body['Id'] == 'UNKNOWN' or body['Id'] == 'None':
+				msg.is_staff = 0
+				msg.name = 'nobody'
+				self.face_result_pub.publish(msg)
 				continue
 			elif body['Confidence'] >0.6:
 				print body
