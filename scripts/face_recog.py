@@ -56,6 +56,7 @@ class face_recog():
 					self.face_result_pub.publish(msg)
 					break
 		elif msg.data == 200:#unrecognized voice, reconfig if there still people talking to
+			start_time = time.time()
 			while True:
 				# Capture frame-by-frame
 				ret, frame = cap.read()
@@ -75,20 +76,18 @@ class face_recog():
 					msg.is_staff = 0
 					msg.name = 'nobody'
 					self.face_result_pub.publish(msg)
-					continue
-				elif body['Confidence'] >0.6:#reconfiged registered people
-					print body
-					msg.is_staff = 1
-					msg.name = body['Id']
-					self.face_result_pub.publish(msg)
-					break
+					now_time = time.time()
+					if now_time - start_time <= 3:
+						continue
+					else:
+						break
 				else:#reconfiged unregistered people
 					msg.is_staff = 0
 					msg.name = 'unknown'
 					self.face_result_pub.publish(msg)
 					break
-			else:
-				pass
+		else:
+			pass
 
 
 
