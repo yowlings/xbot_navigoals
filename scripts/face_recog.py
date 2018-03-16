@@ -26,37 +26,69 @@ class face_recog():
 	def next_loopCB(self, loop_count):
 		cap = cv2.VideoCapture(0)
 		msg = FaceResult()
-		while True:
-			# Capture frame-by-frame
-			ret, frame = cap.read()
-			if ret:
-				cv2.imwrite('tmp.jpg',frame)
-			with open("tmp.jpg", "rb") as fp:
-				image_binary = fp.read()
-				image_binary = base64.b64encode(image_binary)
-				post_data = {"Image":image_binary}
-				body = JSONEncoder().encode(post_data)
-				req = urllib2.Request(url, body)
-				response = urllib2.urlopen(req).read()
-				body = JSONDecoder().decode(response)
-				rospy.loginfo(body)
+		if msg.data == 255:##got back to origin, start next loop
+			while True:
+				# Capture frame-by-frame
+				ret, frame = cap.read()
+				if ret:
+					cv2.imwrite('tmp.jpg',frame)
+				with open("tmp.jpg", "rb") as fp:
+					image_binary = fp.read()
+					image_binary = base64.b64encode(image_binary)
+					post_data = {"Image":image_binary}
+					body = JSONEncoder().encode(post_data)
+					req = urllib2.Request(url, body)
+					response = urllib2.urlopen(req).read()
+					body = JSONDecoder().decode(response)
+					rospy.loginfo(body)
 
-			if body['Id'] == 'UNKNOWN' or body['Id'] == 'None':
-				msg.is_staff = 0
-				msg.name = 'nobody'
-				self.face_result_pub.publish(msg)
-				continue
-			elif body['Confidence'] >0.6:
-				print body
-				msg.is_staff = 1
-				msg.name = body['Id']
-				self.face_result_pub.publish(msg)
-				break
+				if body['Id'] == 'UNKNOWN' or body['Id'] == 'None':#no people in frame
+					continue
+				elif body['Confidence'] >0.6:#registered people in frame
+					print body
+					msg.is_staff = 1
+					msg.name = body['Id']
+					self.face_result_pub.publish(msg)
+					break
+				else:#unregistered people in frame
+					msg.is_staff = 0
+					msg.name = 'unknown'
+					self.face_result_pub.publish(msg)
+					break
+		elif msg.data == 200:#unrecognized voice, reconfig if there still people talking to
+			while True:
+				# Capture frame-by-frame
+				ret, frame = cap.read()
+				if ret:
+					cv2.imwrite('tmp.jpg',frame)
+				with open("tmp.jpg", "rb") as fp:
+					image_binary = fp.read()
+					image_binary = base64.b64encode(image_binary)
+					post_data = {"Image":image_binary}
+					body = JSONEncoder().encode(post_data)
+					req = urllib2.Request(url, body)
+					response = urllib2.urlopen(req).read()
+					body = JSONDecoder().decode(response)
+					rospy.loginfo(body)
+
+				if body['Id'] == 'UNKNOWN' or body['Id'] == 'None':#reconfiged nobody
+					msg.is_staff = 0
+					msg.name = 'nobody'
+					self.face_result_pub.publish(msg)
+					continue
+				elif body['Confidence'] >0.6:#reconfiged registered people
+					print body
+					msg.is_staff = 1
+					msg.name = body['Id']
+					self.face_result_pub.publish(msg)
+					break
+				else:#reconfiged unregistered people
+					msg.is_staff = 0
+					msg.name = 'unknown'
+					self.face_result_pub.publish(msg)
+					break
 			else:
-				msg.is_staff = 0
-				msg.name = 'unknown'
-				self.face_result_pub.publish(msg)
-				break
+				pass
 
 
 
