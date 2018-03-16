@@ -26,7 +26,7 @@ class face_recog():
 	def next_loopCB(self, loop_count):
 		cap = cv2.VideoCapture(0)
 		msg = FaceResult()
-		if msg.data == 255:##got back to origin, start next loop
+		if loop_count.data == 255:##got back to origin, start next loop
 			while True:
 				# Capture frame-by-frame
 				ret, frame = cap.read()
@@ -55,7 +55,7 @@ class face_recog():
 					msg.name = 'unknown'
 					self.face_result_pub.publish(msg)
 					break
-		elif msg.data == 200:#unrecognized voice, reconfig if there still people talking to
+		elif loop_count.data == 200:#unrecognized voice, reconfig if there still people talking to
 			start_time = time.time()
 			while True:
 				# Capture frame-by-frame
