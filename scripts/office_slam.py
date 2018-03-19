@@ -21,15 +21,13 @@ class office_slam():
 		self.clear_costmap_srv = rospy.ServiceProxy('/move_base/clear_costmaps', Empty)
 		self.coll_position_dict = dict()
 		self.current_goal = []
-		self.loop_times = UInt32()
-		self.loop_times.data = 0
+		self.loop_tag = UInt32()
+		self.loop_tag.data = 0
 		yaml_path = rospy.get_param('/office_slam/yaml_file_path')
 		yaml_path = yaml_path + '/scripts/coll_position_dic.yaml'
 		f = open(yaml_path, 'r')
 		self.coll_position_dict = yaml.load(f)
 		f.close()
-		# self.loop_times.data+=1
-		# self.next_loop_pub.publish(self.loop_times)
 		rospy.spin()
 
 	def goal_nameCB(self, name):
@@ -55,8 +53,8 @@ class office_slam():
 			#success
 			self.goal_reached_pub.publish(self.current_goal[0])
 			if self.current_goal[0].data == 'origin':
-				self.loop_times.data += 1
-				self.next_loop_pub.publish(self.loop_times)
+				self.loop_tag.data = 255
+				self.next_loop_pub.publish(self.loop_tag)
 		elif result.status.status == 4:
 			#failed
 			msg = String()
