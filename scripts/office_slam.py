@@ -18,16 +18,18 @@ class office_slam():
 		self.move_base_goal_pub = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=1)
 		self.move_base_result_sub = rospy.Subscriber('/move_base/result', MoveBaseActionResult, self.move_base_resultCB)
 		self.goal_name_sub = rospy.Subscriber('/office/goal_name', String, self.goal_nameCB)
+		self.clear_costmaps_srv = rospy.ServiceProxy('/move_base/clear_costmaps',Empty)
 		self.coll_position_dict = dict()
 		self.current_goal = []
 		self.loop_tag = UInt32()
 		self.loop_tag.data = 0
-		yaml_path = rospy.get_param('/office_slam/yaml_file_path')
+		yaml_path = rospy.get_param('/office_slam/yaml_file_path','/home/roc/catkin_ws/src/xbot_navigoals')
 		yaml_path = yaml_path + '/scripts/coll_position_dic.yaml'
 		f = open(yaml_path, 'r')
 		self.coll_position_dict = yaml.load(f)
 		f.close()
 		rospy.spin()
+
 
 	def goal_nameCB(self, name):
 		pos = self.coll_position_dict[name.data]
@@ -47,12 +49,12 @@ class office_slam():
 
 	def move_base_resultCB(self, result):
 		if result.status.status == 3:
-			#success
+			# success
 			self.goal_reached_pub.publish(self.current_goal[0])
 			if self.current_goal[0].data == 'origin':
 				self.loop_tag.data = 255
 				self.next_loop_pub.publish(self.loop_tag)
-				os.system('rosservice call /move_base/clear_costmaps ')
+			self.clear_costmaps_srv()
 		elif result.status.status == 4:
 			#failed
 			msg = String()

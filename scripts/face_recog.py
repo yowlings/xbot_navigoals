@@ -27,6 +27,9 @@ class face_recog():
 		cap = cv2.VideoCapture(0)
 		msg = FaceResult()
 		if loop_count.data == 255:##got back to origin, start next loop
+			last_face = None
+			times_face = 0
+			times_unknown = 0
 			while True:
 				# Capture frame-by-frame
 				ret, frame = cap.read()
@@ -42,19 +45,37 @@ class face_recog():
 					body = JSONDecoder().decode(response)
 					rospy.loginfo(body)
 
+
+
 				if body['Id'] == 'UNKNOWN' or body['Id'] == 'None':#no people in frame
+					times_face = 0
+					times_unknown = 0
 					continue
 				elif body['Confidence'] >0.6:#registered people in frame
-					print body
-					msg.is_staff = 1
-					msg.name = body['Id']
-					self.face_result_pub.publish(msg)
-					break
+					times_unknown = 0
+					if times_face = 0:
+						last_face = body['Id']
+						times_face = times_face +1
+						continue					
+					if last_face == body['Id']:
+						times_face = times_face +1
+					else:
+						times_face = 0
+						continue
+					if times_face >= 10:				
+						msg.is_staff = 1
+						msg.name = body['Id']
+						self.face_result_pub.publish(msg)
+						last_face = body['Id']
+						break
 				else:#unregistered people in frame
-					msg.is_staff = 0
-					msg.name = 'unknown'
-					self.face_result_pub.publish(msg)
-					break
+					times_face = 0
+					times_unknown = times_unknown + 1
+					if times_unknown >= 10:
+						msg.is_staff = 0
+						msg.name = 'unknown'
+						self.face_result_pub.publish(msg)
+						break
 		elif loop_count.data == 200:#unrecognized voice, reconfig if there still people talking to
 			start_time = time.time()
 			while True:
