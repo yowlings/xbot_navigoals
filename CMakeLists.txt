@@ -16,6 +16,8 @@ add_message_files(
 	RobotStatus.msg
 	SignStatus.msg
 	AudioStatus.msg
+	PoseWithAudio.msg
+	PoseAudioArray.msg
 )
 
 generate_messages(
